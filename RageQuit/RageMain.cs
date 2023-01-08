@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RageQuit
 {
-    public class Class1
+    public class RageMain
     {
     }
 }
