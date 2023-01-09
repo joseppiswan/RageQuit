@@ -27,8 +27,6 @@ namespace RageQuit
             effectHandler = rootObject.AddComponent<EffectHandler>();
             RageAPI.NewEffect("Turn 180", true, 0, new Action(() => { Player.RotatePlayer(180); }), null);
             RageAPI.NewEffect("Ragdoll For 5 Seconds", false, 5, new Action(() => { Player.physicsRig.RagdollRig(); }), new Action(() => { Player.physicsRig.UnRagdollRig(); }));
-            RageAPI.SetBaseRate(7);
-            RageAPI.SetRateRandomRange(0, 0);
         }
     }
 
