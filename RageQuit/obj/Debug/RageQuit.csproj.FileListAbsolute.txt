@@ -1,3 +1,4 @@
 E:\Bonelab\RageQuit\RageQuit\bin\Debug\RageQuit.dll
 E:\Bonelab\RageQuit\RageQuit\obj\Debug\RageQuit.csproj.CoreCompileInputs.cache
 E:\Bonelab\RageQuit\RageQuit\obj\Debug\RageQuit.dll
+E:\Bonelab\RageQuit\RageQuit\obj\Debug\RageQuit.csproj.AssemblyReference.cache

@@ -13,11 +13,13 @@ namespace RageQuit.Effects
     {
         public static Dictionary<string, RageEffect> effectsList = new Dictionary<string,RageEffect>();
 
-        public static RageEffect AddEffect(string name, float duration, Action runAction)
+        public static RageEffect AddEffect(string name, bool single, float duration, Action runAction, Action afterAction)
         {
             RageEffect newEffect = new RageEffect();
+            newEffect.single = single;
             newEffect.duration = duration;
             newEffect.effectAction = runAction;
+            newEffect.afterAction = afterAction;
             effectsList.Add(name, newEffect);
             return newEffect;
         }
@@ -27,15 +29,24 @@ namespace RageQuit.Effects
 
     public class RageEffect
     {
+        public bool single;
         public float duration;
         public Action effectAction;
+        public Action afterAction;
         private float next;
 
         public void fireEvent()
         {
             next = Time.time + duration;
-            Task h = doLoop();
-            //MelonCoroutines.Start(loopRun());
+            if (single) {
+                effectAction();
+                if (afterAction != null)
+                {
+                    afterAction();
+                }
+            } else { 
+                Task h = doLoop();
+            }
         }
         private async Task doLoop()
         {
@@ -44,19 +55,10 @@ namespace RageQuit.Effects
                 effectAction();
                 await Task.Delay(100);
             }
-        }
-        private IEnumerator loopRun()
-        {
-            //while (true)
-            //{
-            //    if (Time.time >= next)
-            //    {
-            //        MelonCoroutines.Stop(loopRun());
-            //        break;
-            //    }
-            //    //MelonCoroutines.Start(loopRun());
-            //}
-            yield return null;
+            if (afterAction != null)
+            {
+                afterAction();
+            }
         }
     }
 }

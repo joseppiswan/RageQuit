@@ -6,6 +6,7 @@ using BoneLib;
 using Random = UnityEngine.Random;
 using RageQuit.Effects;
 using RageQuit.API;
+using System.Linq;
 
 [assembly: MelonInfo(typeof(RageQuit.RageMain),"RageQuit","dont.even.try","joe swan#2228")]
 
@@ -14,7 +15,7 @@ namespace RageQuit
     public class RageMain :  MelonMod
     {
         GameObject rootObject;
-        EffectHandler effectHandler;
+        public static EffectHandler effectHandler;
         public override void OnInitializeMelon()
         {
             //Hooking
@@ -24,8 +25,10 @@ namespace RageQuit
         {
             rootObject = new GameObject("RAGE_QUIT_MAIN");
             effectHandler = rootObject.AddComponent<EffectHandler>();
-
-            RageAPI.NewEffect("Debug Thing", 5, new Action(() => { Player.RotatePlayer(32); }));
+            RageAPI.NewEffect("Turn 180", true, 0, new Action(() => { Player.RotatePlayer(180); }), null);
+            RageAPI.NewEffect("Ragdoll For 5 Seconds", false, 5, new Action(() => { Player.physicsRig.RagdollRig(); }), new Action(() => { Player.physicsRig.UnRagdollRig(); }));
+            RageAPI.SetBaseRate(7);
+            RageAPI.SetRateRandomRange(0, 0);
         }
     }
 
@@ -34,9 +37,9 @@ namespace RageQuit
     {
         private bool debug = true;
 
-        private float next;
-        private float delay = 15f;
-        private List<float> randDelayRange = new List<float>();
+        public float next;
+        public float delay = 5f;
+        public List<float> randDelayRange = new List<float>();
         public EffectHandler(IntPtr popcornRepellantTrees) : base(popcornRepellantTrees) { }
         //level start
         void Start()
@@ -50,11 +53,16 @@ namespace RageQuit
         {
             if(Time.time >= next)
             {
-                foreach(KeyValuePair<string,RageEffect> effectEntry in RageEffects.effectsList)
-                {
-                    if (debug) MelonLogger.Msg("Calling Event: " + effectEntry.Key + " for duration: " + effectEntry.Value.duration);
-                    effectEntry.Value.fireEvent();
-                }
+                Dictionary<string, RageEffect> dictionary = RageEffects.effectsList;
+                System.Random random = new System.Random();
+                int index = random.Next(dictionary.Count);
+
+                string key = dictionary.Keys.ElementAt(index);
+                RageEffect value = dictionary.Values.ElementAt(index);
+
+                KeyValuePair<string, RageEffect> effectEntry = dictionary.ElementAt(index);
+                if (debug) MelonLogger.Msg("Calling Event: " + effectEntry.Key + " for duration: " + effectEntry.Value.duration);
+                effectEntry.Value.fireEvent();
 
                 delay += Random.RandomRange(randDelayRange[0], randDelayRange[1]);
                 next = Time.time + delay;
