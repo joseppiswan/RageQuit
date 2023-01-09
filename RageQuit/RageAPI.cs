@@ -34,7 +34,21 @@ namespace RageQuit.API
         /// <returns>The new RageEffect created.</returns>
         public static RageEffect NewEffect(string name, bool single, float duration, Action runAction, Action afterAction)
         {
-            return RageEffects.AddEffect(name, single, duration, runAction,afterAction);
+            return RageEffects.AddEffect(name, single, duration, runAction, afterAction);
+        }
+        /// <summary>
+        /// Creates a new effect to be used by RageQuit. This method will add the effect to the base mod automatically. RageEffects.AddEffect will still do the same thing as this method, this is just in the API class instead.
+        /// </summary>
+        /// <param name="name">Name of effect.</param>
+        /// <param name="single">Decides whether the effect will be fired once or repeated for duration seconds.</param>
+        /// <param name="duration">Duration of the effect (in seconds)</param>
+        /// <param name="runAction">The action that gets ran when RageEffect.fireEvent() is called.</param>
+        /// <param name="afterAction">The action that gets ran after the effect is complete. Useful for undoing things doing in runAction, for example, ragdolling. Set to null to not be ran.</param>
+        /// <param name="slow">instead of running the action every 100 ms, this does it every second. *better* not perfect for things that shouldnt be called every 1/10 of a second</param>
+        /// <returns>The new RageEffect created.</returns>
+        public static RageEffect NewEffect(string name, bool single, float duration, Action runAction, Action afterAction,bool slow)
+        {
+            return RageEffects.AddEffect(name, single, duration, runAction, afterAction,slow);
         }
 
         /// <summary>

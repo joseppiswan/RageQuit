@@ -23,6 +23,17 @@ namespace RageQuit.Effects
             effectsList.Add(name, newEffect);
             return newEffect;
         }
+        public static RageEffect AddEffect(string name, bool single, float duration, Action runAction, Action afterAction, bool slow)
+        {
+            RageEffect newEffect = new RageEffect();
+            newEffect.single = single;
+            newEffect.duration = duration;
+            newEffect.slow = true;
+            newEffect.effectAction = runAction;
+            newEffect.afterAction = afterAction;
+            effectsList.Add(name, newEffect);
+            return newEffect;
+        }
     }
 
     
@@ -31,13 +42,12 @@ namespace RageQuit.Effects
     {
         public bool single;
         public float duration;
+        public bool slow;
         public Action effectAction;
         public Action afterAction;
-        private float next;
 
         public void fireEvent()
         {
-            next = Time.time + duration;
             if (single) {
                 effectAction();
                 if (afterAction != null)
@@ -45,7 +55,7 @@ namespace RageQuit.Effects
                     afterAction();
                 }
             } else { 
-                Task h = doLoop();
+                Task h = !slow ? doLoop() : doSlowLoop();
             }
         }
         private async Task doLoop()
@@ -54,6 +64,18 @@ namespace RageQuit.Effects
             {
                 effectAction();
                 await Task.Delay(100);
+            }
+            if (afterAction != null)
+            {
+                afterAction();
+            }
+        }
+        private async Task doSlowLoop()
+        {
+            for (int i = 0; i < duration; i++)
+            {
+                effectAction();
+                await Task.Delay(1000);
             }
             if (afterAction != null)
             {
