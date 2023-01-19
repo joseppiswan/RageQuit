@@ -1,4 +1,5 @@
-﻿using MelonLoader;
+﻿using BoneLib;
+using MelonLoader;
 using RageQuit.Effects;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,15 @@ using UnityEngine;
 
 namespace RageQuit.API
 {
-    class RageAPI
+    /// <summary>
+    /// The Official RageQuit API.
+    /// </summary>
+    public static class RageAPI
     {
+        ///// <summary>
+        ///// Fires when RageQuit has loaded.
+        ///// </summary>
+        //public static event Action onRageLoaded;
         /// <summary>
         /// Fires all events in the RageEffects.effectsList dictionary.
         /// </summary>
@@ -139,5 +147,11 @@ namespace RageQuit.API
         {
             handler.enabled = enabled;
         }
+
+        //internal static void rageload()
+        //{
+        //    SafeActions.InvokeActionSafe(onRageLoaded);
+        //    //onRageLoaded();
+        //}
     }
 }

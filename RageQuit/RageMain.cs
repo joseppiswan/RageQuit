@@ -8,16 +8,37 @@ using RageQuit.Effects;
 using RageQuit.API;
 using System.Linq;
 using SLZ.Combat;
+using System.Threading.Tasks;
+using SLZ.Props;
+using SLZ.Bonelab;
+using System.Threading;
 
-[assembly: MelonInfo(typeof(RageQuit.RageMain),"RageQuit","dont.even.try","joe swan#2228")]
+[assembly: MelonGame("Stress Level Zero", "BONELAB")]
+[assembly: MelonPriority(-1000)]
+[assembly: MelonInfo(typeof(RageQuit.RageMain),"RageQuit","1.0.0","joe swan#2228")]
 
 namespace RageQuit
 {
+    /// <summary>
+    /// RageMain class. do NOT modify anything here unless you know exactly what you are doing.
+    /// </summary>
     public class RageMain :  MelonMod
     {
         GameObject rootObject;
+        /// <summary>
+        /// the main effect handler. recommended to use API methods instead.
+        /// </summary>
         public static EffectHandler effectHandler;
+        /// <summary>
+        /// the last effect that was ran. API implementation planned in the future.
+        /// </summary>
+        public static RageEffect lastEffect;
+
+        private RandomAvatar randomAvatar;
+
+        #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         public override void OnInitializeMelon()
+        #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
         {
             //Hooking
             Hooking.OnLevelInitialized += new Action<LevelInfo>(LevelLoaded);
@@ -27,39 +48,61 @@ namespace RageQuit
             rootObject = new GameObject("RAGE_QUIT_MAIN");
             effectHandler = rootObject.AddComponent<EffectHandler>();
 
-            RageAPI.NewEffect("Turn 180", true, 0, new Action(() => { Player.RotatePlayer(180); }), null);
-            RageAPI.NewEffect("Ragdoll For 5 Seconds", false, 5, new Action(() => { Player.physicsRig.RagdollRig(); }), new Action(() => { Player.physicsRig.UnRagdollRig(); }));
-            RageAPI.NewEffect("Ragdoll For 10 Seconds", false, 10, new Action(() => { Player.physicsRig.RagdollRig(); }), new Action(() => { Player.physicsRig.UnRagdollRig(); }));
-            RageAPI.NewSingleRunEffect("SMASH INTO A WALL", new Action(() => { Player.physicsRig.torso.rbPelvis.AddForce(Player.playerHead.forward * 25); }), null);
+            RageAPI.NewEffect("Turn 180", true, 0, () => { Player.RotatePlayer(180); }, null);
+            RageAPI.NewEffect("Ragdoll For 5 Seconds", false, 5, () => { Player.physicsRig.RagdollRig(); }, () => { Player.physicsRig.UnRagdollRig(); });
+            RageAPI.NewEffect("Ragdoll For 10 Seconds", false, 10, () => { Player.physicsRig.RagdollRig(); }, () => { Player.physicsRig.UnRagdollRig(); });
+            RageAPI.NewSingleRunEffect("SMASH INTO A WALL", () => { Player.physicsRig.torso.rbPelvis.AddForce(Player.playerHead.forward * 25,ForceMode.Impulse); }, null);
             Vector3 oldGravity = Physics.gravity;
-            RageAPI.NewEffect("on da MOON", false, 30, new Action(() => { Physics.gravity = -0.01f * Vector3.one; }), new Action(() => { Physics.gravity = oldGravity; }));
-            RageAPI.NewEffect("i feel motion sick", false, 10, new Action(() => { Player.RotatePlayer(30); }), null);
-            RageAPI.NewEffect("misclick i swear", false, 10, new Action(() => { Player.GetGunInHand(Player.rightHand)?.Fire(); Player.GetGunInHand(Player.leftHand)?.Fire(); }), null);
-            RageAPI.NewEffect("i dont feel so good", true, 0, new Action(() => { UnityEngine.Object.FindObjectOfType<Player_Health>().TAKEDAMAGE(float.MaxValue); }), null);
-            RageAPI.NewEffect("i swear i didnt press mag eject", true, 0, new Action(() => { Player.GetGunInHand(Player.rightHand)?.EjectCartridge(); Player.GetGunInHand(Player.leftHand)?.EjectCartridge(); }), null);
+            RageAPI.NewEffect("on da MOON", false, 30,() => { Physics.gravity = -0.01f * Vector3.one; }, () => { Physics.gravity = oldGravity; });
+            RageAPI.NewEffect("i feel motion sick", false, 10, () => { Player.RotatePlayer(30); }, null);
+            RageAPI.NewEffect("misclick i swear", false, 10, () => { Player.GetGunInHand(Player.rightHand)?.Fire(); Player.GetGunInHand(Player.leftHand)?.Fire(); }, null,true);
+            RageAPI.NewEffect("i dont feel so good", true, 0, () => { UnityEngine.Object.FindObjectOfType<Player_Health>().TAKEDAMAGE(float.MaxValue); }, null);
+            RageAPI.NewEffect("i swear i didnt press mag eject", true, 0, () => { Player.GetGunInHand(Player.rightHand)?.EjectCartridge(); Player.GetGunInHand(Player.leftHand)?.EjectCartridge(); }, null);
+            RageAPI.NewEffect("wait hold on a second", true, 5, () => { Player.physicsRig.torso.rbPelvis.isKinematic = true; }, () => { Player.physicsRig.torso.rbPelvis.isKinematic = false; },true);
+            RageAPI.NewEffect("youtube.com/watch?v=kKEIVxsrF2E", true, 0, () => { Player.rightHand.enabled = false; Player.leftHand.enabled = false; } ,() => { Player.rightHand.enabled = true; Player.leftHand.enabled = true; });
+            RageAPI.NewSingleRunEffect("Fake Crash (5 seconds)", () => { Thread.Sleep(5000); },null);
+            RageAPI.NewSingleRunEffect("Fake Crash (10 seconds)", () => { Thread.Sleep(10000); },null);
+            RageAPI.NewSingleRunEffect("Fake Crash (10 seconds)", () => { Thread.Sleep(10000); },null);
+            RageAPI.NewSingleRunEffect("", () => { Thread.Sleep(10000); },null);
+
+            //tell rageapi mods that ragequit has loaded.
+            //RageAPI.rageload();
         }
     }
-
+    /// <summary>
+    /// The MonoBehaviour in charge of effects.
+    /// </summary>
     [RegisterTypeInIl2Cpp]
+
     public class EffectHandler : MonoBehaviour
     {
         private bool debug = true;
-
+        /// <summary>
+        /// When the next effect should be ran.
+        /// </summary>
         public float next;
+        /// <summary>
+        /// Base Rate.
+        /// </summary>
         public float delay = 5f;
+        /// <summary>
+        /// Base Rates Random Delay (base + random[min,max])
+        /// </summary>
         public List<float> randDelayRange = new List<float>();
+        #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         public EffectHandler(IntPtr popcornRepellantTrees) : base(popcornRepellantTrees) { }
+        #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
         //level start
         void Start()
         {
             randDelayRange.Add(-5f);
-            randDelayRange.Add(10f);
-            next = Time.time + delay;
+            randDelayRange.Add(5f);
+            next = Time.unscaledTime + delay;
         }
 
         void Update()
         {
-            if(Time.time >= next)
+            if(Time.unscaledTime >= next)
             {
                 Dictionary<string, RageEffect> dictionary = RageEffects.effectsList;
                 System.Random random = new System.Random();
@@ -73,7 +116,7 @@ namespace RageQuit
                 effectEntry.Value.fireEvent();
 
                 delay += Random.RandomRange(randDelayRange[0], randDelayRange[1]);
-                next = Time.time + delay;
+                next = Time.unscaledTime + delay;
             }
         }
     }

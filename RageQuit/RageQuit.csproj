@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\RageQuitAPI.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>None</DebugType>
@@ -73,6 +74,9 @@
     </Reference>
     <Reference Include="UnhollowerRuntimeLib">
       <HintPath>..\..\..\SteamLibrary\steamapps\common\BONELAB\MelonLoader\Managed\UnhollowerRuntimeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="UniTask">
+      <HintPath>..\..\..\SteamLibrary\steamapps\common\BONELAB\MelonLoader\Managed\UniTask.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\SteamLibrary\steamapps\common\BONELAB\MelonLoader\Managed\UnityEngine.dll</HintPath>

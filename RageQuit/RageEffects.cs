@@ -37,15 +37,35 @@ namespace RageQuit.Effects
     }
 
     
-
+    /// <summary>
+    /// The class that handles the effect stuff.
+    /// </summary>
     public class RageEffect
     {
+        /// <summary>
+        /// run once?
+        /// </summary>
         public bool single;
+        /// <summary>
+        /// how long to run for
+        /// </summary>
         public float duration;
+        /// <summary>
+        /// makes the effect run slower when running repeatedly.
+        /// </summary>
         public bool slow;
+        /// <summary>
+        /// the action called when fireEvent is ran.
+        /// </summary>
         public Action effectAction;
+        /// <summary>
+        /// the action called  after the effect has ran.
+        /// </summary>
         public Action afterAction;
 
+        /// <summary>
+        /// run the effect.
+        /// </summary>
         public void fireEvent()
         {
             if (single) {

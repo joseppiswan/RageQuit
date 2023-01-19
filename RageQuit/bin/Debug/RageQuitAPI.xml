@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RageQuit</name>
+    </assembly>
+    <members>
+        <member name="T:RageQuit.Effects.RageEffect">
+            <summary>
+            The class that handles the effect stuff.
+            </summary>
+        </member>
+        <member name="F:RageQuit.Effects.RageEffect.single">
+            <summary>
+            run once?
+            </summary>
+        </member>
+        <member name="F:RageQuit.Effects.RageEffect.duration">
+            <summary>
+            how long to run for
+            </summary>
+        </member>
+        <member name="F:RageQuit.Effects.RageEffect.slow">
+            <summary>
+            makes the effect run slower when running repeatedly.
+            </summary>
+        </member>
+        <member name="F:RageQuit.Effects.RageEffect.effectAction">
+            <summary>
+            the action called when fireEvent is ran.
+            </summary>
+        </member>
+        <member name="F:RageQuit.Effects.RageEffect.afterAction">
+            <summary>
+            the action called  after the effect has ran.
+            </summary>
+        </member>
+        <member name="M:RageQuit.Effects.RageEffect.fireEvent">
+            <summary>
+            run the effect.
+            </summary>
+        </member>
+        <member name="T:RageQuit.RageMain">
+            <summary>
+            RageMain class. do NOT modify anything here unless you know exactly what you are doing.
+            </summary>
+        </member>
+        <member name="F:RageQuit.RageMain.effectHandler">
+            <summary>
+            the main effect handler. recommended to use API methods instead.
+            </summary>
+        </member>
+        <member name="F:RageQuit.RageMain.lastEffect">
+            <summary>
+            the last effect that was ran. API implementation planned in the future.
+            </summary>
+        </member>
+        <member name="T:RageQuit.EffectHandler">
+            <summary>
+            The MonoBehaviour in charge of effects.
+            </summary>
+        </member>
+        <member name="F:RageQuit.EffectHandler.next">
+            <summary>
+            When the next effect should be ran.
+            </summary>
+        </member>
+        <member name="F:RageQuit.EffectHandler.delay">
+            <summary>
+            Base Rate.
+            </summary>
+        </member>
+        <member name="F:RageQuit.EffectHandler.randDelayRange">
+            <summary>
+            Base Rates Random Delay (base + random[min,max])
+            </summary>
+        </member>
+        <member name="T:RageQuit.API.RageAPI">
+            <summary>
+            The Official RageQuit API.
+            </summary>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.Chaos(System.Boolean)">
+            <summary>
+            Fires all events in the RageEffects.effectsList dictionary.
+            </summary>
+            <param name="debug">Logs debug message with effect name and duration.</param>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.NewEffect(System.String,System.Boolean,System.Single,System.Action,System.Action)">
+            <summary>
+            Creates a new effect to be used by RageQuit. This method will add the effect to the base mod automatically. RageEffects.AddEffect will still do the same thing as this method, this is just in the API class instead.
+            </summary>
+            <param name="name">Name of effect.</param>
+            <param name="single">Decides whether the effect will be fired once or repeated for duration seconds.</param>
+            <param name="duration">Duration of the effect (in seconds)</param>
+            <param name="runAction">The action that gets ran when RageEffect.fireEvent() is called.</param>
+            <param name="afterAction">The action that gets ran after the effect is complete. Useful for undoing things doing in runAction, for example, ragdolling. Set to null to not be ran.</param>
+            <returns>The new RageEffect created.</returns>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.NewEffect(System.String,System.Boolean,System.Single,System.Action,System.Action,System.Boolean)">
+            <summary>
+            Creates a new effect to be used by RageQuit. This method will add the effect to the base mod automatically. RageEffects.AddEffect will still do the same thing as this method, this is just in the API class instead.
+            </summary>
+            <param name="name">Name of effect.</param>
+            <param name="single">Decides whether the effect will be fired once or repeated for duration seconds.</param>
+            <param name="duration">Duration of the effect (in seconds)</param>
+            <param name="runAction">The action that gets ran when RageEffect.fireEvent() is called.</param>
+            <param name="afterAction">The action that gets ran after the effect is complete. Useful for undoing things doing in runAction, for example, ragdolling. Set to null to not be ran.</param>
+            <param name="slow">instead of running the action every 100 ms, this does it every second. *better* not perfect for things that shouldnt be called every 1/10 of a second</param>
+            <returns>The new RageEffect created.</returns>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.SetBaseRate(System.Single)">
+            <summary>
+            Sets the base rate for effects to happen. Default=15. (1 effect/15s). This WILL be affected by the rate range
+            </summary>
+            <param name="rate">The base rate at which effects happen per x seconds (plus random)</param>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.SetRateRandomRange(System.Single,System.Single)">
+            <summary>
+            Sets the effect rates random range (1 effect/[x + random]s)
+            </summary>
+            <param name="smallest">The minimum number</param>
+            <param name="biggest">The highest number</param>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.NewSingleRunEffect(System.String,System.Action,System.Action)">
+            <summary>
+            Creates a new effect thats ran once instead of a duration.
+            </summary>
+            <param name="name">Name of effect.</param>
+            <param name="runAction">The action that gets ran when RageEffect.fireEvent() is called.</param>
+            <param name="afterAction">The action that gets ran after the effect is complete. Useful for undoing things doing in runAction, for example, ragdolling. Set to null to not be ran.</param>
+            <returns>The new RageEffect created.</returns>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.NewDurationEffect(System.String,System.Single,System.Action,System.Action)">
+            <summary>
+            Creates a new effect thats ran for duration seconds instead of once.
+            </summary>
+            <param name="name">Name of effect.</param>
+            <param name="duration">Duration of the effect (in seconds)</param>
+            <param name="runAction">The action that gets ran when RageEffect.fireEvent() is called.</param>
+            <param name="afterAction">The action that gets ran after the effect is complete. Useful for undoing things doing in runAction, for example, ragdolling. Set to null to not be ran.</param>
+            <returns>The new RageEffect created.</returns>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.GetEffectHandler">
+            <summary>
+            Gets the main EffectHandler.
+            </summary>
+            <returns>The effectHandler of RageMain. This is the main EffectHandler used by the mod.</returns>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.GetEffectHandlers">
+            <summary>
+            Gets every EffectHandler in the scene. Uses FindObjectsOfType each call.
+            </summary>
+            <returns>an EffectHandler[] with every EffectHandler found in the scene.</returns>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.CallNextEffect(System.Boolean)">
+            <summary>
+            Calls the next random effect.
+            </summary>
+            <param name="affectTimer">Decides whether this timer should be refreshed. For exapmle, timer is at 2 seconds left before an effect, setting this to true would reset it to the random delay value.</param>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.SetEnabled(System.Boolean)">
+            <summary>
+            Sets the main EffectHandler to enabled or disabled
+            </summary>
+            <param name="enabled">Enabled or disabled</param>
+        </member>
+        <member name="M:RageQuit.API.RageAPI.SetEnabled(RageQuit.EffectHandler,System.Boolean)">
+            <summary>
+            Sets the given EffectHandler to enabled or disabled
+            </summary>
+            <param name="handler">The handler to be affected</param>
+            <param name="enabled">Enabled or disabled</param>
+        </member>
+    </members>
+</doc>
