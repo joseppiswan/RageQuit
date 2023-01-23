@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 using SLZ.Props;
 using SLZ.Bonelab;
 using System.Threading;
+using SLZ.Marrow.Pool;
+using SLZ.Marrow.Data;
+using SLZ.Marrow.Warehouse;
+using BoneLib.Nullables;
 
 [assembly: MelonGame("Stress Level Zero", "BONELAB")]
 [assembly: MelonPriority(-1000)]
@@ -62,8 +66,65 @@ namespace RageQuit
             RageAPI.NewEffect("youtube.com/watch?v=kKEIVxsrF2E", true, 0, () => { Player.rightHand.enabled = false; Player.leftHand.enabled = false; } ,() => { Player.rightHand.enabled = true; Player.leftHand.enabled = true; });
             RageAPI.NewSingleRunEffect("Fake Crash (5 seconds)", () => { Thread.Sleep(5000); },null);
             RageAPI.NewSingleRunEffect("Fake Crash (10 seconds)", () => { Thread.Sleep(10000); },null);
-            RageAPI.NewSingleRunEffect("Fake Crash (10 seconds)", () => { Thread.Sleep(10000); },null);
-            RageAPI.NewSingleRunEffect("", () => { Thread.Sleep(10000); },null);
+            RageAPI.NewSingleRunEffect("what up, son!", () => {
+
+                Transform head = Player.playerHead.transform;
+                string barcode = "c1534c5a-3fd8-4d50-9eaf-0695466f7264";
+                SpawnableCrateReference reference = new SpawnableCrateReference(barcode);
+
+                Spawnable spawnable = new Spawnable()
+                {
+                    crateRef = reference
+                };
+
+                AssetSpawner.Register(spawnable);
+                AssetSpawner.Spawn(spawnable, head.position + head.forward, default, new BoxedNullable<Vector3>(Vector3.one), false, new BoxedNullable<int>(null), null, null);
+            }, null);
+            RageAPI.NewEffect("I SAID WHATS UP SON.", false, 2.5f, () => {
+
+                Transform head = Player.playerHead.transform;
+                string barcode = "c1534c5a-3fd8-4d50-9eaf-0695466f7264";
+                SpawnableCrateReference reference = new SpawnableCrateReference(barcode);
+
+                Spawnable spawnable = new Spawnable()
+                {
+                    crateRef = reference
+                };
+
+                AssetSpawner.Register(spawnable);
+                AssetSpawner.Spawn(spawnable, head.position + head.forward, default, new BoxedNullable<Vector3>(Vector3.one), false, new BoxedNullable<int>(null), null, null);
+            }, null, false);
+            RageAPI.NewEffect("NullReferenceException", false, 2.5f, () => {
+
+                Transform head = Player.playerHead.transform;
+                string barcode = "c1534c5a-2775-4009-9447-22d94e756c6c";
+                SpawnableCrateReference reference = new SpawnableCrateReference(barcode);
+
+                Spawnable spawnable = new Spawnable()
+                {
+                    crateRef = reference
+                };
+
+                AssetSpawner.Register(spawnable);
+                AssetSpawner.Spawn(spawnable, head.position + head.forward, default, new BoxedNullable<Vector3>(Vector3.one), false, new BoxedNullable<int>(null), null, null);
+            }, null, false);
+            RageAPI.NewEffect("crates CRATES CRRRAAAATEEEESSSS!!!", false, 5f, () => {
+
+                Transform head = Player.playerHead.transform;
+                string barcode = "c1534c5a-5be2-49d6-884e-d35c576f6f64";
+                SpawnableCrateReference reference = new SpawnableCrateReference(barcode);
+
+                Spawnable spawnable = new Spawnable()
+                {
+                    crateRef = reference
+                };
+
+                AssetSpawner.Register(spawnable);
+                AssetSpawner.Spawn(spawnable, head.position + head.forward, default, new BoxedNullable<Vector3>(Vector3.one), false, new BoxedNullable<int>(null), null, null);
+            }, null, false);
+            RageAPI.NewEffect("invert velocity", true, 0f, () => {
+                Player.physicsRig.torso.rbPelvis.velocity *= -1;
+            }, null, false);
 
             //tell rageapi mods that ragequit has loaded.
             //RageAPI.rageload();
